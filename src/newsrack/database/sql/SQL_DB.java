@@ -1808,7 +1808,8 @@ public class SQL_DB extends DB_Interface
 
 			// Save to db!
 		Long cKey = cat.getKey();
-		SQL_StmtExecutor.update("UPDATE categories SET lft = ?, rgt = ? WHERE c_key = ?",
+		// XXX SQLFIX
+		SQL_StmtExecutor.update("UPDATE categories SET lft = ?, rgt = ? WHERE id = ?",
 										new SQL_ValType[] {SQL_ValType.INT, SQL_ValType.INT, SQL_ValType.LONG},
 										new Object[] {nsId, next, cKey});
 
@@ -2033,7 +2034,7 @@ public class SQL_DB extends DB_Interface
 			List<Long> cKeys = getKeysForAllNestedLeafCats(cat);
 
 				// Add conditions to fetch news from all the nested leaf cats
-			StringBuffer queryBuf = new StringBuffer("DELETE FROM cat_news WHERE n_key = ? AND c_key IN (");
+			StringBuffer queryBuf = new StringBuffer("DELETE FROM cat_news WHERE news_item_id = ? AND category_id IN (");
 			Iterator<Long> it = cKeys.iterator();
 			while (it.hasNext()) {
 				queryBuf.append(it.next());
@@ -2074,14 +2075,14 @@ public class SQL_DB extends DB_Interface
 
 			// Set up conditions for categories
 		if (cat.isLeafCategory()) {
-			queryBuf.append(" c_key = ").append(catKey);
+			queryBuf.append(" category_id = ").append(catKey);
 		}
 		else {
 				// Get keys of all leaf categories that are nested within the requested cat
 			List<Long> cKeys = getKeysForAllNestedLeafCats(cat);
 
 				// Add conditions to fetch news from all the nested leaf cats
-			queryBuf.append(" c_key IN (");
+			queryBuf.append(" category_id IN (");
 			Iterator<Long> it = cKeys.iterator();
 			while (it.hasNext()) {
 				queryBuf.append(it.next());
@@ -2092,7 +2093,7 @@ public class SQL_DB extends DB_Interface
 		}
 
 			// Set up conditions for news items
-		queryBuf.append(" AND n_key IN (");
+		queryBuf.append(" AND news_item_id IN (");
 		Iterator<Long> it = nKeys.iterator();
 		while (it.hasNext()) {
 			queryBuf.append(it.next());
@@ -2138,8 +2139,8 @@ public class SQL_DB extends DB_Interface
 
 	private List<Long> getKeysForAllNestedLeafCats(Category cat)
 	{
-		String query = "SELECT c2.c_key FROM categories c, categories c2 " +
-		               "WHERE c.c_key = ? AND c2.t_key = c.t_key AND c2.lft > c.lft AND c2.rgt < c.rgt AND c2.rgt = c2.lft + 1"; 
+		String query = "SELECT c2.id FROM categories c, categories c2 " +
+		               "WHERE c.id = ? AND c2.topic_id = c.topic_id AND c2.lft > c.lft AND c2.rgt < c.rgt AND c2.rgt = c2.lft + 1"; 
 		return (List<Long>)SQL_StmtExecutor.execute(query,
 																  SQL_StmtType.QUERY,
 																  new Object[] {cat.getKey()},
@@ -2170,19 +2171,19 @@ public class SQL_DB extends DB_Interface
 
 				// Init query
 			queryBuf.append("SELECT");
-			queryBuf.append(cat.isLeafCategory() ? " c.n_key" : " DISTINCT(c.n_key)");
+			queryBuf.append(cat.isLeafCategory() ? " c.news_item_id" : " DISTINCT(c.news_item_id)");
 			queryBuf.append(" FROM cat_news c");
 
 				// Add conditions for feed-specific news
 			if (src != null) {
-				queryBuf.append(" JOIN news_collections nc ON nc.n_key = c.n_key AND nc.feed_key = ?");
+				queryBuf.append(" JOIN news_collections nc ON nc.news_item_id = c.news_item_id AND nc.feed_id = ?");
 				argList.add(src.getFeed().getKey());
 				argTypeList.add(SQL_ValType.LONG);
 			}
 
 				// Add category-specific conditions
 			if (cat.isLeafCategory()) {
-				queryBuf.append(" WHERE c.c_key = ?");
+				queryBuf.append(" WHERE c.category_id = ?");
 				argList.add(catKey);
 				argTypeList.add(SQL_ValType.LONG);
 			}
@@ -2191,7 +2192,7 @@ public class SQL_DB extends DB_Interface
 				List<Long> cKeys = getKeysForAllNestedLeafCats(cat);
 
 					// Add conditions to fetch news from all the nested leaf cats
-				queryBuf.append(" WHERE c.c_key IN (");
+				queryBuf.append(" WHERE c.category_id IN (");
 				Iterator<Long> it = cKeys.iterator();
 				while (it.hasNext()) {
 					queryBuf.append(it.next());
@@ -2211,7 +2212,7 @@ public class SQL_DB extends DB_Interface
 			}
 
 				// Add sorting and limiting constraints
-			queryBuf.append(" ORDER by date_stamp DESC, n_key DESC LIMIT ?, ?");
+			queryBuf.append(" ORDER by date_stamp DESC, news_item_id DESC LIMIT ?, ?");
 			argList.add(startId);
 			argList.add(numArts);
 			argTypeList.add(SQL_ValType.INT);
