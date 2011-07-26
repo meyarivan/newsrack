@@ -55,12 +55,12 @@ public class FixupTools
 
       buf.append("-1");
 
-      System.out.println("select count(*) from news_collections where ni_key = " + newsIndexKey + ";");
-      System.out.println("select count(*) from cat_news where n_key in (" + buf + ");");
-      System.out.println("delete from news_collections where n_key in (" + buf + ");");
-      System.out.println("delete from news_items where n_key in (" + buf + ");");
-      System.out.println("delete from news_item_url_md5_hashes where n_key in (" + buf + ");");
-      System.out.println("delete from cat_news where n_key in (" + buf + ");");
+      System.out.println("select count(*) from news_collections where news_index_id = " + newsIndexKey + ";");
+      System.out.println("select count(*) from cat_news where news_item_id in (" + buf + ");");
+      System.out.println("delete from news_collections where news_item_id in (" + buf + ");");
+      System.out.println("delete from news_items where id in (" + buf + ");");
+      System.out.println("delete from news_item_url_md5_hashes where news_item_id in (" + buf + ");");
+      System.out.println("delete from cat_news where news_item_id in (" + buf + ");");
 	}
 
    public static void changeNewsIndexDate(Long niKey, Date newDate)
@@ -128,7 +128,7 @@ public class FixupTools
 			return;
 
          /* Now fetch all topics that monitor this feed! */
-      List<Long> tkeys = (List<Long>)SQL_StmtExecutor.query("SELECT DISTINCT(t_key) FROM topic_sources WHERE feed_key = ?",
+      List<Long> tkeys = (List<Long>)SQL_StmtExecutor.query("SELECT DISTINCT(topic_id) FROM topic_sources WHERE feed_id = ?",
                                                             new SQL_ValType[] {SQL_ValType.LONG},
                                                             new Object[]{feedKey},
                                                             SQL_StmtExecutor._longProcessor,
@@ -155,7 +155,7 @@ public class FixupTools
 						HTMLFilter hf = new HTMLFilter(n.getURL(), origOrig.toString(), f.substring(0, f.lastIndexOf(File.separatorChar)));
 						hf.setIgnoreCommentsHeuristic(n.getFeed().getIgnoreCommentsHeuristic());
 						hf.run();
-						SQL_StmtExecutor.delete("DELETE FROM cat_news WHERE n_key = ?", new SQL_ValType[] {SQL_ValType.LONG}, new Object[]{n.getKey()});
+						SQL_StmtExecutor.delete("DELETE FROM cat_news WHERE news_item_id = ?", new SQL_ValType[] {SQL_ValType.LONG}, new Object[]{n.getKey()});
 						refilteredNews.add(n);
 					}
 					catch (Exception e) {
@@ -271,7 +271,7 @@ public class FixupTools
 
 			// Save to db!
 		Long cKey = cat.getKey();
-		SQL_StmtExecutor.update("UPDATE categories SET lft = ?, rgt = ? WHERE c_key = ?",
+		SQL_StmtExecutor.update("UPDATE categories SET lft = ?, rgt = ? WHERE id = ?",
 										new SQL_ValType[] {SQL_ValType.INT, SQL_ValType.INT, SQL_ValType.LONG},
 										new Object[] {nsId, next, cKey});
 
@@ -323,7 +323,7 @@ public class FixupTools
 
 	public static void canonicalizeURLs(String domain, Date startDate, Date endDate, boolean refetch)
    {
-      List<Long> fkeys = (List<Long>)SQL_StmtExecutor.query("SELECT feed_key FROM feeds WHERE url like ?",
+      List<Long> fkeys = (List<Long>)SQL_StmtExecutor.query("SELECT id FROM feeds WHERE url like ?",
                                                             new SQL_ValType[] {SQL_ValType.STRING},
                                                             new Object[]{"%" + domain + "%"},
                                                             SQL_StmtExecutor._longProcessor,
@@ -424,7 +424,7 @@ public class FixupTools
 		if (ukey == null) {
 			/* Users that dont import from anyone else! */
 			List<Long> ukeys_1 = (List<Long>)SQL_StmtExecutor.query(
-											"SELECT u_key FROM users WHERE NOT EXISTS (SELECT * FROM import_dependencies WHERE importing_user_key = u_key) AND validated=1",
+											"SELECT id FROM users WHERE NOT EXISTS (SELECT * FROM import_dependencies WHERE importing_user_id = id) AND validated=1",
 											new SQL_ValType[] {},
 											new Object[]{},
 											SQL_StmtExecutor._longProcessor,
