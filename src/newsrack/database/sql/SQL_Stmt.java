@@ -1447,11 +1447,6 @@ public enum SQL_Stmt
 		new SQL_ValType[] {LONG, LONG},
       SQL_StmtType.DELETE
 	),
-	DELETE_SOURCE_BY_TAG(
-		"DELETE FROM sources WHERE user_id = ? AND coll_key = ? AND src_tag = ?",
-		new SQL_ValType[] {LONG, LONG, STRING},
-      SQL_StmtType.DELETE
-	),
 	DELETE_SOURCE_BY_ID(
 		"DELETE FROM sources WHERE id = ?",
 		new SQL_ValType[] {LONG},
@@ -1495,11 +1490,6 @@ public enum SQL_Stmt
 	DELETE_ALL_CONCEPTS_FOR_USER(
 		"DELETE FROM concepts WHERE user_id = ?",
 		new SQL_ValType[] {LONG},
-      SQL_StmtType.DELETE
-	),
-	DELETE_CONCEPT_BY_NAME(
-		"DELETE FROM concepts WHERE user_id = ? AND coll_key = ? AND name = ?",
-		new SQL_ValType[] {LONG, LONG, STRING},
       SQL_StmtType.DELETE
 	),
 	DELETE_ALL_TOPIC_SOURCES_FOR_USER(

@@ -313,11 +313,11 @@ public class SQL_NewsItem extends NewsItem
 						// No conflict with the new url!
 					newsrack.util.Tuple<String,String> t = SQL_DB.splitURL(newUrl);
 						// Update the url
-					SQL_StmtExecutor.update("UPDATE news_items SET url_root = ?, url_tail = ? WHERE n_key = ?", 
+					SQL_StmtExecutor.update("UPDATE news_items SET url_root = ?, url_tail = ? WHERE id = ?", 
 					                        new SQL_ValType[] { SQL_ValType.STRING, SQL_ValType.STRING, SQL_ValType.LONG },
 													new Object[] { t._a, t._b, getKey() });
 						// Update the md5 hash
-					SQL_StmtExecutor.update("UPDATE news_item_url_md5_hashes SET url_hash = md5(?) WHERE n_key = ?", 
+					SQL_StmtExecutor.update("UPDATE news_item_url_md5_hashes SET url_hash = md5(?) WHERE news_item_id = ?", 
 					                        new SQL_ValType[] { SQL_ValType.STRING, SQL_ValType.LONG },
 													new Object[] { newUrl, getKey() });
 
@@ -352,15 +352,15 @@ public class SQL_NewsItem extends NewsItem
 					File deletedFile = this.getFilteredFilePath();
 						// News item already exists .. merge the two news items!
 						// 1. Assign over all of this news item's category assignments to the dupe
-					SQL_StmtExecutor.update("UPDATE IGNORE cat_news SET n_key = ? WHERE n_key = ?",
+					SQL_StmtExecutor.update("UPDATE IGNORE cat_news SET news_item_id = ? WHERE news_item_id = ?",
 					                        new SQL_ValType[] { SQL_ValType.LONG, SQL_ValType.LONG },
 													new Object[] { dupe.getKey(), getKey() });
 						// 2. Assign over all of this news items's news collections assignments to the dupe
-					SQL_StmtExecutor.update("UPDATE IGNORE news_collections SET n_key = ? WHERE n_key = ?",
+					SQL_StmtExecutor.update("UPDATE IGNORE news_collections SET news_item_id = ? WHERE news_item_id = ?",
 					                        new SQL_ValType[] { SQL_ValType.LONG, SQL_ValType.LONG },
 													new Object[] { dupe.getKey(), getKey() });
 						// 3. Delete the news item now!
-					SQL_StmtExecutor.delete("DELETE FROM news_items WHERE n_key = ?",
+					SQL_StmtExecutor.delete("DELETE FROM news_items WHERE news_item_id = ?",
 					                        new SQL_ValType[] { SQL_ValType.LONG },
 													new Object[] { getKey() });
 
