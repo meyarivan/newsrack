@@ -39,7 +39,7 @@ public class SQL_ConceptStub extends Concept
 		}
 		catch (NullPointerException e) {
 			String keywords = (String)SQL_StmtExecutor.execute(
-										"SELECT keywords FROM concept_table WHERE cpt_key = ?",
+										"SELECT keywords FROM concept_table WHERE id = ?",
 										SQL_StmtType.QUERY,
 										new Object[]{getKey()},
 										new SQL_ValType[]{SQL_ValType.LONG},

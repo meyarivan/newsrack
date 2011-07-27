@@ -35,7 +35,7 @@ public class UserMigration
 			for (Source s: u.getSources()) {
 				Feed f = s.getFeed();
 				try {
-					SQL_StmtExecutor.update("UPDATE feeds SET feed_name = ? WHERE feed_key = ? AND feed_name=''",
+					SQL_StmtExecutor.update("UPDATE feeds SET feed_name = ? WHERE id = ? AND feed_name=''",
 													new SQL_ValType[] {SQL_ValType.STRING, SQL_ValType.LONG},
 													new Object[] {s.getName(), f.getKey()});
 				}
@@ -71,7 +71,7 @@ public class UserMigration
 			for (Source s: u.getSources()) {
 				Feed f = s.getFeed();
 				try {
-					SQL_StmtExecutor.update("UPDATE feeds SET feed_name = ? WHERE feed_key = ? AND feed_name=''",
+					SQL_StmtExecutor.update("UPDATE feeds SET feed_name = ? WHERE id = ? AND feed_name=''",
 													new SQL_ValType[] {SQL_ValType.STRING, SQL_ValType.LONG},
 													new Object[] {s.getName(), f.getKey()});
 				}

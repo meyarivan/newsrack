@@ -55,7 +55,7 @@ public class SQL_NewsIndex extends NewsIndex
       SQL_ValType[] valTypes = new SQL_ValType[] { SQL_ValType.DATE, SQL_ValType.LONG };
       Object[]      args     = new Object[]      { new java.sql.Date(newDate.getTime()), _niKey };
 
-		SQL_StmtExecutor.update("UPDATE news_indexes SET created_at = ? WHERE ni_key = ?", valTypes, args);
-		SQL_StmtExecutor.update("UPDATE cat_news SET date_stamp = ? WHERE ni_key = ?", valTypes, args);
+		SQL_StmtExecutor.update("UPDATE news_indexes SET created_at = ? WHERE id = ?", valTypes, args);
+		SQL_StmtExecutor.update("UPDATE cat_news SET date_stamp = ? WHERE news_index_id = ?", valTypes, args);
    }
 }
