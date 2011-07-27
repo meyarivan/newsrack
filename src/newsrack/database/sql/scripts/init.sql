@@ -102,7 +102,7 @@ create table if not exists news_item_localnames (
  * simpler to have ALL mappings, but, wastes space ... but the
  * additional space usage is perhaps not significant?
  */
-create table if not exists news_collections (
+create table if not exists news_collection_entries (
    news_index_id int not null,
    news_item_id  int not null,
 	feed_id int,
@@ -116,7 +116,7 @@ create table if not exists news_collections (
 /**
  * This is a table that temporarily holds the list of downloaded news for all feeds
  */
-create table if not exists downloaded_news (
+create table if not exists downloaded_news_entries (
    feed_id       int not null,
 	news_item_id  int not null,
    constraint fk_downloaded_news_1 foreign key(feed_id) references feeds(id),
