@@ -286,7 +286,7 @@ create table if not exists user_collections (
 create table if not exists collection_entries (
    collection_id  int not null,  /* collection key */
    entry_id int not null,  /* key for the entry; sKey / c_key / cpt_key */ 
-	entry_type  varchar(255) not null, /* source/feed/concept/category */
+	entry_type  varchar(255), /* source/feed/concept/category */
    constraint fk_collection_entries_1 foreign key(collection_id) references collections(id)
 );
 

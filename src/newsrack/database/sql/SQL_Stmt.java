@@ -1108,7 +1108,7 @@ public enum SQL_Stmt
 		true
    ),
 	INSERT_TOPIC(
-		"INSERT INTO topics (user_id, name, validated, frozen, private, taxonomy_path) VALUES (?,?,?,?,?,?)",
+		"INSERT INTO topics (user_id, name, validated, frozen, private, taxonomy_path, created_at, updated_at) VALUES (?,?,?,?,?,?, UTC_TIMESTAMP(), UTC_TIMESTAMP())",
 		new SQL_ValType[] {LONG, STRING, BOOLEAN, BOOLEAN, BOOLEAN, STRING},
       SQL_StmtType.INSERT,
 		null,
@@ -1116,7 +1116,7 @@ public enum SQL_Stmt
 		true
 	),
    INSERT_FEED(
-		"INSERT INTO feeds (feed_name, url, num_fetches, num_failures) VALUES (?,?,0,0)",
+		"INSERT INTO feeds (feed_name, url, num_fetches, num_failures, created_at, updated_at) VALUES (?,?,0,0, UTC_TIMESTAMP(), UTC_TIMESTAMP())",
 		new SQL_ValType[] {STRING, STRING},
       SQL_StmtType.INSERT,
       new SQL_ColumnSize[] {NONE, FEED_TBL_FEEDURL},
@@ -1160,7 +1160,7 @@ public enum SQL_Stmt
       SQL_StmtType.INSERT
 	),
 	INSERT_CAT(
-		"INSERT INTO categories (name, user_id, topic_id, cat_id, parent_cat_id, filter_id, taxonomy_path) VALUES (?,?,?,?,?,?,?)",
+		"INSERT INTO categories (name, user_id, topic_id, cat_id, parent_cat_id, filter_id, taxonomy_path, created_at, updated_at) VALUES (?,?,?,?,?,?,?, UTC_TIMESTAMP(), UTC_TIMESTAMP())",
       new SQL_ValType[] {STRING, LONG, LONG, INT, LONG, LONG, STRING},
 		SQL_StmtType.INSERT,
       new SQL_ColumnSize[] {CAT_TBL_NAME, NONE, NONE, NONE, NONE, NONE, NONE},
@@ -1194,7 +1194,7 @@ public enum SQL_Stmt
       SQL_StmtType.INSERT
 	),
 	INSERT_COLLECTION(
-		"INSERT INTO user_collections (coll_name, coll_type, file_id, user_id, uid) VALUES (?, ?, ?, ?, ?)",
+		"INSERT INTO user_collections (coll_name, coll_type, user_file_id, user_id, uid) VALUES (?, ?, ?, ?, ?)",
 		new SQL_ValType[] {STRING, STRING, LONG, LONG, STRING},
       SQL_StmtType.INSERT,
 		null,
@@ -1309,7 +1309,7 @@ public enum SQL_Stmt
       SQL_StmtType.UPDATE
 	),
 	UPDATE_LEAF_CAT_NEWS_INFO(
-		"UPDATE categories SET updated_at = ?, num_new_articles = ?, num_articles = (select count(*) from cat_news where category_id = categories.id) WHERE category_id = ?",
+		"UPDATE categories SET updated_at = ?, num_new_articles = ?, num_articles = (select count(*) from cat_news where category_id = categories.id) WHERE id = ?",
       new SQL_ValType[] {TIMESTAMP, INT, LONG},
 		SQL_StmtType.UPDATE
 	),
