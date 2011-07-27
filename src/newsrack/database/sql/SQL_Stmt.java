@@ -584,7 +584,7 @@ public enum SQL_Stmt
 		false
 	),
 	GET_CATS_FOR_NEWSITEM(
-		"SELECT c.id, c.name, c.cat_id, c.parent_cat_id, c.filter_id, c.user_id, c.topic_id, c.num_articles, c.last_update, c.num_new_articles, c.taxonomy_path FROM cat_news cn, categories c WHERE news_item_id = ? AND cn.category_id = c.id AND c.valid = true",
+		"SELECT c.id, c.name, c.cat_id, c.parent_cat_id, c.filter_id, c.user_id, c.topic_id, c.num_articles, c.updated_at, c.num_new_articles, c.taxonomy_path FROM cat_news cn, categories c WHERE news_item_id = ? AND cn.category_id = c.id AND c.valid = true",
 		new SQL_ValType[] {LONG},
       SQL_StmtType.QUERY,
 		null,
@@ -619,7 +619,7 @@ public enum SQL_Stmt
 	),
 	GET_NEWS_FROM_NEWSINDEX(
 		"SELECT n.id, n.primary_news_index_id, n.url_root, n.url_tail, n.title, n.description, n.author, ni.created_at, ni.feed_id" +
-		   " FROM  news_items n, news_indexes ni, news_collections nc" +
+		   " FROM  news_items n, news_indexes ni, news_collection_entries nc" +
 		   " WHERE (nc.news_index_id = ? AND nc.news_item_id = n.id AND ni.id = nc.news_index_id)",
 		new SQL_ValType[] {LONG},
       SQL_StmtType.QUERY,
@@ -628,7 +628,7 @@ public enum SQL_Stmt
 		false
 	),
 	GET_ALL_FEEDS_FOR_NEWS_ITEM(
-		"SELECT feed_id FROM news_collections where news_item_id = ?",
+		"SELECT feed_id FROM news_collection_entries where news_item_id = ?",
 		new SQL_ValType[] {LONG},
       SQL_StmtType.QUERY,
 		null,
@@ -637,7 +637,7 @@ public enum SQL_Stmt
 	),
 	GET_DOWNLOADED_NEWS_FOR_FEED(
 		"SELECT n.id, n.primary_news_index_id, n.url_root, n.url_tail, n.title, n.description, n.author, ni.created_at, ni.feed_id" +
-		   " FROM news_items n, news_indexes ni, downloaded_news dn" +
+		   " FROM news_items n, news_indexes ni, downloaded_news_items dn" +
 		   " WHERE (dn.feed_id = ?) AND (dn.news_item_id = n.id) AND (n.primary_news_index_id = ni.id)",
 		new SQL_ValType[] {LONG},
       SQL_StmtType.QUERY,
@@ -646,7 +646,7 @@ public enum SQL_Stmt
 		false
 	),
 	GET_DOWNLOADED_NEWS_KEYS_FOR_FEED(
-		"SELECT news_item_id FROM downloaded_news dn WHERE (dn.feed_id = ?)",
+		"SELECT news_item_id FROM downloaded_news_items dn WHERE (dn.feed_id = ?)",
 		new SQL_ValType[] {LONG},
       SQL_StmtType.QUERY,
 		null,
@@ -760,7 +760,7 @@ public enum SQL_Stmt
 		true
 	),
 	GET_CAT_INFO(
-		"SELECT id, num_articles, last_update FROM categories WHERE topic_id = ? AND cat_id = ?",
+		"SELECT id, num_articles, updated_at FROM categories WHERE topic_id = ? AND cat_id = ?",
       new SQL_ValType[] {LONG, INT},
 		SQL_StmtType.QUERY,
 		null,
@@ -802,7 +802,7 @@ public enum SQL_Stmt
 		false
 	),
 	GET_CATS_FOR_ISSUE(
-		"SELECT id, name, cat_id, parent_cat_id, filter_id, user_id, topic_id, num_articles, last_update, num_new_articles, taxonomy_path FROM categories WHERE topic_id = ? AND valid = true",
+		"SELECT id, name, cat_id, parent_cat_id, filter_id, user_id, topic_id, num_articles, updated_at, num_new_articles, taxonomy_path FROM categories WHERE topic_id = ? AND valid = true",
 		new SQL_ValType[] {LONG},
       SQL_StmtType.QUERY,
 		null,
@@ -923,7 +923,7 @@ public enum SQL_Stmt
 		true
 	),
 	GET_MONITORED_SOURCE_KEYS_FOR_TOPIC(
-		"SELECT t.source_id FROM topic_sources t WHERE t.id = ?",
+		"SELECT t.source_id FROM topic_sources t WHERE t.topic_id = ?",
 		new SQL_ValType[] {LONG},
 		SQL_StmtType.QUERY,
 		null,
@@ -1035,7 +1035,7 @@ public enum SQL_Stmt
 		true
 	),
 	GET_CATEGORY(
-		"SELECT id, name, cat_id, parent_cat_id, filter_id, user_id, topic_id, num_articles, last_update, num_new_articles, taxonomy_path FROM categories WHERE id = ?",
+		"SELECT id, name, cat_id, parent_cat_id, filter_id, user_id, topic_id, num_articles, updated_at, num_new_articles, taxonomy_path FROM categories WHERE id = ?",
 		new SQL_ValType[] {LONG},
 		SQL_StmtType.QUERY,
 		null,
@@ -1043,7 +1043,7 @@ public enum SQL_Stmt
 		true
 	),
 	GET_CATEGORY_FROM_TAXONOMY_PATH(
-		"SELECT id, name, cat_id, parent_cat_id, filter_id, user_id, topic_id, num_articles, last_update, num_new_articles, taxonomy_path FROM categories WHERE taxonomy_path = ? AND valid = ?",
+		"SELECT id, name, cat_id, parent_cat_id, filter_id, user_id, topic_id, num_articles, updated_at, num_new_articles, taxonomy_path FROM categories WHERE taxonomy_path = ? AND valid = ?",
 		new SQL_ValType[] {STRING, BOOLEAN},
 		SQL_StmtType.QUERY,
 		null,
@@ -1059,7 +1059,7 @@ public enum SQL_Stmt
 		false
 	),
 	GET_NESTED_CATS(
-		"SELECT id, name, cat_id, parent_cat_id, filter_id, user_id, topic_id, num_articles, last_update, num_new_articles, taxonomy_path FROM categories WHERE parent_cat_id = ?",
+		"SELECT id, name, cat_id, parent_cat_id, filter_id, user_id, topic_id, num_articles, updated_at, num_new_articles, taxonomy_path FROM categories WHERE parent_cat_id = ?",
 		new SQL_ValType[] {LONG},
 		SQL_StmtType.QUERY,
 		null,
@@ -1100,7 +1100,7 @@ public enum SQL_Stmt
 	),
 		// Prepared Statement Strings for INSERTs 
    INSERT_USER(
-		"INSERT INTO users (uid, password, name, email) VALUES (?,?,?,?)",
+	       "INSERT INTO users (uid, password, name, email, created_at, updated_at) VALUES (?,?,?,?, UTC_TIMESTAMP(), UTC_TIMESTAMP())",
 		new SQL_ValType[] {STRING, STRING, STRING, STRING},
       SQL_StmtType.INSERT,
       new SQL_ColumnSize[] {USER_TBL_UID, USER_TBL_PASSWORD, USER_TBL_NAME, USER_TBL_EMAIL},
@@ -1140,7 +1140,7 @@ public enum SQL_Stmt
 		true
 	),
 	INSERT_INTO_NEWS_COLLECTION(
-		"INSERT IGNORE INTO news_collections (news_item_id, news_index_id, feed_id) VALUES (?, ?, ?)",
+		"INSERT IGNORE INTO news_collection_entries (news_item_id, news_index_id, feed_id) VALUES (?, ?, ?)",
 		new SQL_ValType[] {LONG, LONG, LONG},
       SQL_StmtType.INSERT
 	),
@@ -1155,7 +1155,7 @@ public enum SQL_Stmt
 		SQL_StmtType.INSERT
 	),
 	INSERT_INTO_RECENT_DOWNLOAD_TABLE(
-		"INSERT IGNORE INTO downloaded_news (feed_id, news_item_id) VALUES (?, ?)",
+		"INSERT IGNORE INTO downloaded_news_items (feed_id, news_item_id) VALUES (?, ?)",
 		new SQL_ValType[] {LONG, LONG},
       SQL_StmtType.INSERT
 	),
@@ -1181,7 +1181,7 @@ public enum SQL_Stmt
       SQL_StmtType.INSERT
 	),
 	INSERT_USER_FILE(
-		"INSERT INTO user_files(user_id, file_name) VALUES (?, ?)",
+		"INSERT INTO user_files(user_id, file_name, created_at, updated_at) VALUES (?, ?, UTC_TIMESTAMP(), UTC_TIMESTAMP())",
 		new SQL_ValType[] {LONG, STRING},
       SQL_StmtType.INSERT,
 		null,
@@ -1245,12 +1245,12 @@ public enum SQL_Stmt
 		SQL_StmtType.UPDATE
 	),
 	UPDATE_USER(
-		"UPDATE users SET password = ?, name = ?, email = ?, validated = ? WHERE user_id = ?",
+		"UPDATE users SET password = ?, name = ?, email = ?, validated = ? WHERE id = ?",
       new SQL_ValType[] {STRING, STRING, STRING, BOOLEAN, LONG},
 		SQL_StmtType.UPDATE
 	),
 	UPDATE_LOGIN_DATE(
-		"UPDATE users SET last_login = ? WHERE user_id = ?",
+		"UPDATE users SET last_login = ? WHERE id = ?",
       new SQL_ValType[] {TIMESTAMP, LONG},
 		SQL_StmtType.UPDATE
 	),
@@ -1309,12 +1309,12 @@ public enum SQL_Stmt
       SQL_StmtType.UPDATE
 	),
 	UPDATE_LEAF_CAT_NEWS_INFO(
-		"UPDATE categories SET last_update = ?, num_new_articles = ?, num_articles = (select count(*) from cat_news where category_id = categories.id) WHERE category_id = ?",
+		"UPDATE categories SET updated_at = ?, num_new_articles = ?, num_articles = (select count(*) from cat_news where category_id = categories.id) WHERE category_id = ?",
       new SQL_ValType[] {TIMESTAMP, INT, LONG},
 		SQL_StmtType.UPDATE
 	),
 	UPDATE_CAT_NEWS_INFO(
-		"UPDATE categories SET num_articles = ?, last_update = ?, num_new_articles = ? WHERE id = ?",
+		"UPDATE categories SET num_articles = ?, updated_at = ?, num_new_articles = ? WHERE id = ?",
       new SQL_ValType[] {INT, TIMESTAMP, INT, LONG},
 		SQL_StmtType.UPDATE
 	),
@@ -1352,7 +1352,7 @@ public enum SQL_Stmt
       SQL_StmtType.UPDATE
 	),
 	UPDATE_SHARED_NEWS_ITEM_ENTRIES(
-      "UPDATE IGNORE news_collections SET news_item_id = ? WHERE news_item_id = ?",
+      "UPDATE IGNORE news_collection_entries SET news_item_id = ? WHERE news_item_id = ?",
 		new SQL_ValType[] {LONG, LONG},
       SQL_StmtType.UPDATE
 	),
@@ -1368,12 +1368,12 @@ public enum SQL_Stmt
       SQL_StmtType.DELETE
 	),
 	CLEAR_DOWNLOADED_NEWS_FOR_FEED(
-		"DELETE FROM downloaded_news WHERE feed_id = ?",
+		"DELETE FROM downloaded_news_items WHERE feed_id = ?",
 		new SQL_ValType[] {LONG},
       SQL_StmtType.DELETE
 	),
 	CLEAR_DOWNLOADED_NEWS_TABLE(
-		"TRUNCATE downloaded_news",
+		"TRUNCATE downloaded_news_items",
 		new SQL_ValType[] {},
       SQL_StmtType.DELETE
 	),
@@ -1408,7 +1408,7 @@ public enum SQL_Stmt
       SQL_StmtType.DELETE
 	),
 	DELETE_SHARED_NEWS_ITEM_ENTRIES(
-	   "DELETE FROM news_collections WHERE news_item_id = ?",
+	   "DELETE FROM news_collection_entries WHERE news_item_id = ?",
 		new SQL_ValType[] {LONG},
       SQL_StmtType.DELETE
 	),
