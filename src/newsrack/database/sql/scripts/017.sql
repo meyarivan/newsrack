@@ -94,7 +94,7 @@ ALTER TABLE user_collections CHANGE file_key user_file_id int not null;
 
 ALTER TABLE collection_entries CHANGE coll_key collection_id int not null;
 ALTER TABLE collection_entries CHANGE entry_key entry_id int not null;
-ALTER TABLE collection_entries ADD entry_type varchar(255) not null;
+ALTER TABLE collection_entries ADD entry_type varchar(255);
 /* changing entry_type into a int which is an index into table of types saves space ? */
 
 /** TABLE: sources **/
@@ -120,7 +120,7 @@ ALTER TABLE concepts CHANGE u_key user_id int not null;
 
 ALTER TABLE filters CHANGE f_key id int not null auto_increment;
 ALTER TABLE filters CHANGE u_key user_id int not null;
-ALTER TABLE filters CHANGE rule_key root_rule_term_id int not null;
+ALTER TABLE filters CHANGE rule_key root_rule_term_id int;
 
 /** TABLE: filter_rule_terms **/
 
