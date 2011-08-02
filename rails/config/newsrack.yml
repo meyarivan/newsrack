@@ -1,0 +1,5 @@
+users:
+  root: /data/newsrack/users/
+
+archive:
+  root: /data/newsrack/archive/

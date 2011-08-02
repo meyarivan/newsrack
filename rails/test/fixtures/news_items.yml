@@ -1,0 +1,17 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  primary_ni_key: 
+  url_root: MyString
+  url_tail: MyString
+  title: MyText
+  description: 
+  author: MyText
+
+two:
+  primary_ni_key: 
+  url_root: MyString
+  url_tail: MyString
+  title: MyText
+  description: 
+  author: MyText
