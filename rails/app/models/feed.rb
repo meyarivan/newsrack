@@ -4,13 +4,13 @@ class Feed < ActiveRecord::Base
   validates_length_of :feed_name, :allow_nil => false, :maximum => 128
   validates_presence_of :url
   validates_length_of :url, :allow_nil => false, :maximum => 2048
-  validates_inclusion_of :cacheable, :in => [true, false], :allow_nil => true, :message => ActiveRecord::Errors.default_error_messages[:blank]
-  validates_inclusion_of :use_ignore_comments_heuristic, :in => [true, false], :allow_nil => true, :message => ActiveRecord::Errors.default_error_messages[:blank]
-  validates_inclusion_of :show_cache_links, :in => [true, false], :allow_nil => true, :message => ActiveRecord::Errors.default_error_messages[:blank]
+  validates_inclusion_of :cacheable, :in => [true, false], :allow_nil => true, :message => I18n.t("activerecord.errors.messages.blank")
+  validates_inclusion_of :use_ignore_comments_heuristic, :in => [true, false], :allow_nil => true, :message => I18n.t("activerecord.errors.messages.blank")
+  validates_inclusion_of :show_cache_links, :in => [true, false], :allow_nil => true, :message => I18n.t("activerecord.errors.messages.blank")
   validates_numericality_of :mins_between_downloads, :allow_nil => true, :only_integer => true
   validates_numericality_of :num_fetches, :allow_nil => true, :only_integer => true
   validates_numericality_of :num_failures, :allow_nil => true, :only_integer => true
-  validates_inclusion_of :dead, :in => [true, false], :allow_nil => true, :message => ActiveRecord::Errors.default_error_messages[:blank]
+  validates_inclusion_of :dead, :in => [true, false], :allow_nil => true, :message => I18n.t("activerecord.errors.messages.blank")
   validates_length_of :publication, :allow_nil => true, :maximum => 255
   validates_uniqueness_of :feed_tag
 

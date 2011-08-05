@@ -7,7 +7,7 @@ class User < ActiveRecord::Base
   validates_length_of :name, :allow_nil => false, :maximum => 256
   validates_presence_of :email
   validates_length_of :email, :allow_nil => false, :maximum => 256
-  validates_inclusion_of :validated, :in => [true, false], :allow_nil => true, :message => ActiveRecord::Errors.default_error_messages[:blank]
+  validates_inclusion_of :validated, :in => [true, false], :allow_nil => true
   validates_presence_of :last_login
   validates_uniqueness_of :uid
 

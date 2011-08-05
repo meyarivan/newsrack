@@ -1,5 +1,5 @@
 class Category < ActiveRecord::Base
-  validates_inclusion_of :valid, :in => [true, false], :allow_nil => true, :message => ActiveRecord::Errors.default_error_messages[:blank]
+  validates_inclusion_of :valid, :in => [true, false], :allow_nil => true
   validates_presence_of :name
   validates_length_of :name, :allow_nil => false, :maximum => 256
   validates_numericality_of :lft, :allow_nil => true, :only_integer => true
