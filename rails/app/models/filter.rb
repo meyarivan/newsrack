@@ -5,7 +5,7 @@ class Filter < ActiveRecord::Base
   validates_numericality_of :min_match_score, :allow_nil => true, :only_integer => true
 
   belongs_to :user
-  belongs_to :root_rule_term, :class_name => "RuleTerm"
+  belongs_to :root_rule_term, :class_name => "FilterRuleTerm"
 
   def used_concepts
     root_rule_term.used_concepts

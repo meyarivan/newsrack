@@ -2,7 +2,7 @@ class FilterRuleTerm < ActiveRecord::Base
   validates_presence_of :term_type
   validates_numericality_of :term_type, :allow_nil => false, :only_integer => true
 
-  module FilterOp {
+  module FilterOp
      NOP            = 0 
      LEAF_CONCEPT   = 1 
      AND_TERM       = 2 
@@ -13,7 +13,7 @@ class FilterRuleTerm < ActiveRecord::Base
      LEAF_FILTER    = 7 
      PROXIMITY_TERM = 8 
      SOURCE_FILTER  = 9
-  }
+  end
 
   belongs_to :filter
   belongs_to :arg1, :class_name => "FilterRuleTerm"
